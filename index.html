@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>MEL Database Dashboard Map</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Africa_Countries_0.js"></script>
+        <script src="data/Partner_universities2_1.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[-41.53901801296141,-25.698255126174743],[46.45033210613183,81.21333753402267]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'topleft'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>MEL Database Dashboard Map</h2>';
+        };
+        title.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop_Africa_Countries_0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME'] !== null ? autolinker.link(String(feature.properties['NAME']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Africa_Countries_0_0() {
+            return {
+                pane: 'pane_Africa_Countries_0',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,242,248,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Africa_Countries_0');
+        map.getPane('pane_Africa_Countries_0').style.zIndex = 400;
+        map.getPane('pane_Africa_Countries_0').style['mix-blend-mode'] = 'normal';
+        var layer_Africa_Countries_0 = new L.geoJson(json_Africa_Countries_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Africa_Countries_0',
+            layerName: 'layer_Africa_Countries_0',
+            pane: 'pane_Africa_Countries_0',
+            onEachFeature: pop_Africa_Countries_0,
+            style: style_Africa_Countries_0_0,
+        });
+        bounds_group.addLayer(layer_Africa_Countries_0);
+        map.addLayer(layer_Africa_Countries_0);
+        function pop_Partner_universities2_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Partner</th>\
+                        <td>' + (feature.properties['Partner'] !== null ? autolinker.link(String(feature.properties['Partner']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(String(feature.properties['Type']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Description</th>\
+                        <td>' + (feature.properties['Description'] !== null ? autolinker.link(String(feature.properties['Description']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Website_url</th>\
+                        <td>' + (feature.properties['Website_url'] !== null ? autolinker.link(String(feature.properties['Website_url']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Email</th>\
+                        <td>' + (feature.properties['Email'] !== null ? autolinker.link(String(feature.properties['Email']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phone</th>\
+                        <td>' + (feature.properties['Phone'] !== null ? autolinker.link(String(feature.properties['Phone']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Address</th>\
+                        <td>' + (feature.properties['Address'] !== null ? autolinker.link(String(feature.properties['Address']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Logo_url</th>\
+                        <td>' + (feature.properties['Logo_url'] !== null ? autolinker.link(String(feature.properties['Logo_url']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">___________</th>\
+                        <td>' + (feature.properties['___________'] !== null ? autolinker.link(String(feature.properties['___________']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Contact person</th>\
+                        <td>' + (feature.properties['Contact person'] !== null ? autolinker.link(String(feature.properties['Contact person']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Position</th>\
+                        <td>' + (feature.properties['position'] !== null ? autolinker.link(String(feature.properties['position']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Email</th>\
+                        <td>' + (feature.properties['email_1'] !== null ? autolinker.link(String(feature.properties['email_1']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phone</th>\
+                        <td>' + (feature.properties['phone_1'] !== null ? autolinker.link(String(feature.properties['phone_1']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">____________</th>\
+                        <td>' + (feature.properties['____________'] !== null ? autolinker.link(String(feature.properties['____________']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Partnership start-date</th>\
+                        <td class="visible-with-data" id="Partnership start-date">' + (feature.properties['Partnership start-date'] !== null ? autolinker.link(String(feature.properties['Partnership start-date']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Focus areas</th>\
+                        <td>' + (feature.properties['Focus areas'] !== null ? autolinker.link(String(feature.properties['Focus areas']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">_________</th>\
+                        <td>' + (feature.properties['_________'] !== null ? autolinker.link(String(feature.properties['_________']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Number of beneficiaries supported</th>\
+                        <td>' + (feature.properties['Number of beneficiaries supported'] !== null ? autolinker.link(String(feature.properties['Number of beneficiaries supported']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Funding received (USD)</th>\
+                        <td>' + (feature.properties['Funding received (USD)'] !== null ? autolinker.link(String(feature.properties['Funding received (USD)']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Project_title</th>\
+                        <td>' + (feature.properties['Project_title'] !== null ? autolinker.link(String(feature.properties['Project_title']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Project role</th>\
+                        <td>' + (feature.properties['Project role'] !== null ? autolinker.link(String(feature.properties['Project role']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Start-date</th>\
+                        <td>' + (feature.properties['Start-date'] !== null ? autolinker.link(String(feature.properties['Start-date']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">End-date</th>\
+                        <td>' + (feature.properties['End-date'] !== null ? autolinker.link(String(feature.properties['End-date']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">_____________</th>\
+                        <td>' + (feature.properties['_____________'] !== null ? autolinker.link(String(feature.properties['_____________']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">KPI name</th>\
+                        <td>' + (feature.properties['KPI name'] !== null ? autolinker.link(String(feature.properties['KPI name']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Target value</th>\
+                        <td>' + (feature.properties['Target value'] !== null ? autolinker.link(String(feature.properties['Target value']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Current value</th>\
+                        <td>' + (feature.properties['Current value'] !== null ? autolinker.link(String(feature.properties['Current value']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Unit</th>\
+                        <td>' + (feature.properties['Unit'] !== null ? autolinker.link(String(feature.properties['Unit']).replace(/'/g, '\'').replace(/"/g, '&quot;').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Partner_universities2_1_0() {
+            return {
+                pane: 'pane_Partner_universities2_1',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(145,160,192,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,255,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Partner_universities2_1');
+        map.getPane('pane_Partner_universities2_1').style.zIndex = 401;
+        map.getPane('pane_Partner_universities2_1').style['mix-blend-mode'] = 'normal';
+        var layer_Partner_universities2_1 = new L.geoJson(json_Partner_universities2_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Partner_universities2_1',
+            layerName: 'layer_Partner_universities2_1',
+            pane: 'pane_Partner_universities2_1',
+            onEachFeature: pop_Partner_universities2_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Partner_universities2_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Partner_universities2_1);
+        map.addLayer(layer_Partner_universities2_1);
+        setBounds();
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Partner": "str","NAME": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Partner = document.createElement('div');
+            div_Partner.id = "div_Partner";
+            div_Partner.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Partner);
+            sel_Partner = document.createElement('select');
+            sel_Partner.multiple = true;
+            sel_Partner.size = 4;
+            sel_Partner.id = "sel_Partner";
+            var Partner_options_str = "<option value='' unselected></option>";
+            sel_Partner.onchange = function(){filterFunc()};
+            Partner_options_str  += '<option value="Jomo Kenyatta University of Agriculture and Technology">Jomo Kenyatta University of Agriculture and Technology</option>';
+            Partner_options_str  += '<option value="Makerere University">Makerere University</option>';
+            Partner_options_str  += '<option value="University of Ghana">University of Ghana</option>';
+            Partner_options_str  += '<option value="University of Pretoria">University of Pretoria</option>';
+            sel_Partner.innerHTML = Partner_options_str;
+            div_Partner.appendChild(sel_Partner);
+            var lab_Partner = document.createElement('div');
+            lab_Partner.innerHTML = 'Partner';
+            lab_Partner.className = 'filterlabel';
+            div_Partner.appendChild(lab_Partner);
+            var reset_Partner = document.createElement('div');
+            reset_Partner.innerHTML = 'clear filter';
+            reset_Partner.className = 'filterlabel';
+            reset_Partner.onclick = function() {
+                var options = document.getElementById("sel_Partner").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Partner.appendChild(reset_Partner);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_NAME = document.createElement('div');
+            div_NAME.id = "div_NAME";
+            div_NAME.className= "filterselect";
+            document.getElementById("menu").appendChild(div_NAME);
+            sel_NAME = document.createElement('select');
+            sel_NAME.multiple = true;
+            sel_NAME.size = 10;
+            sel_NAME.id = "sel_NAME";
+            var NAME_options_str = "<option value='' unselected></option>";
+            sel_NAME.onchange = function(){filterFunc()};
+            NAME_options_str  += '<option value="Algeria">Algeria</option>';
+            NAME_options_str  += '<option value="Angola">Angola</option>';
+            NAME_options_str  += '<option value="Benin">Benin</option>';
+            NAME_options_str  += '<option value="Botswana">Botswana</option>';
+            NAME_options_str  += '<option value="Burkina Faso">Burkina Faso</option>';
+            NAME_options_str  += '<option value="Burundi">Burundi</option>';
+            NAME_options_str  += '<option value="Cabo Verde">Cabo Verde</option>';
+            NAME_options_str  += '<option value="Cameroon">Cameroon</option>';
+            NAME_options_str  += '<option value="Central African Republic">Central African Republic</option>';
+            NAME_options_str  += '<option value="Chad">Chad</option>';
+            NAME_options_str  += '<option value="Comoros">Comoros</option>';
+            NAME_options_str  += '<option value="Congo">Congo</option>';
+            NAME_options_str  += '<option value="Congo DRC">Congo DRC</option>';
+            NAME_options_str  += '<option value="Côte d&apos;Ivoire">Côte d&apos;Ivoire</option>';
+            NAME_options_str  += '<option value="Djibouti">Djibouti</option>';
+            NAME_options_str  += '<option value="Egypt">Egypt</option>';
+            NAME_options_str  += '<option value="Equatorial Guinea">Equatorial Guinea</option>';
+            NAME_options_str  += '<option value="Eritrea">Eritrea</option>';
+            NAME_options_str  += '<option value="Eswatini">Eswatini</option>';
+            NAME_options_str  += '<option value="Ethiopia">Ethiopia</option>';
+            NAME_options_str  += '<option value="Gabon">Gabon</option>';
+            NAME_options_str  += '<option value="Gambia">Gambia</option>';
+            NAME_options_str  += '<option value="Ghana">Ghana</option>';
+            NAME_options_str  += '<option value="Guinea">Guinea</option>';
+            NAME_options_str  += '<option value="Guinea-Bissau">Guinea-Bissau</option>';
+            NAME_options_str  += '<option value="Kenya">Kenya</option>';
+            NAME_options_str  += '<option value="Lesotho">Lesotho</option>';
+            NAME_options_str  += '<option value="Liberia">Liberia</option>';
+            NAME_options_str  += '<option value="Libya">Libya</option>';
+            NAME_options_str  += '<option value="Madagascar">Madagascar</option>';
+            NAME_options_str  += '<option value="Malawi">Malawi</option>';
+            NAME_options_str  += '<option value="Mali">Mali</option>';
+            NAME_options_str  += '<option value="Mauritania">Mauritania</option>';
+            NAME_options_str  += '<option value="Mauritius">Mauritius</option>';
+            NAME_options_str  += '<option value="Morocco">Morocco</option>';
+            NAME_options_str  += '<option value="Mozambique">Mozambique</option>';
+            NAME_options_str  += '<option value="Namibia">Namibia</option>';
+            NAME_options_str  += '<option value="Niger">Niger</option>';
+            NAME_options_str  += '<option value="Nigeria">Nigeria</option>';
+            NAME_options_str  += '<option value="Rwanda">Rwanda</option>';
+            NAME_options_str  += '<option value="Sao Tome and Principe">Sao Tome and Principe</option>';
+            NAME_options_str  += '<option value="Senegal">Senegal</option>';
+            NAME_options_str  += '<option value="Seychelles">Seychelles</option>';
+            NAME_options_str  += '<option value="Sierra Leone">Sierra Leone</option>';
+            NAME_options_str  += '<option value="Somalia">Somalia</option>';
+            NAME_options_str  += '<option value="South Africa">South Africa</option>';
+            NAME_options_str  += '<option value="South Sudan">South Sudan</option>';
+            NAME_options_str  += '<option value="Sudan">Sudan</option>';
+            NAME_options_str  += '<option value="Tanzania">Tanzania</option>';
+            NAME_options_str  += '<option value="Togo">Togo</option>';
+            NAME_options_str  += '<option value="Tunisia">Tunisia</option>';
+            NAME_options_str  += '<option value="Uganda">Uganda</option>';
+            NAME_options_str  += '<option value="Zambia">Zambia</option>';
+            NAME_options_str  += '<option value="Zimbabwe">Zimbabwe</option>';
+            sel_NAME.innerHTML = NAME_options_str;
+            div_NAME.appendChild(sel_NAME);
+            var lab_NAME = document.createElement('div');
+            lab_NAME.innerHTML = 'NAME';
+            lab_NAME.className = 'filterlabel';
+            div_NAME.appendChild(lab_NAME);
+            var reset_NAME = document.createElement('div');
+            reset_NAME.innerHTML = 'clear filter';
+            reset_NAME.className = 'filterlabel';
+            reset_NAME.onclick = function() {
+                var options = document.getElementById("sel_NAME").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_NAME.appendChild(reset_NAME);
+        </script>
+    </body>
+</html>
